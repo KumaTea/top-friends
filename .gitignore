@@ -1,0 +1,9 @@
+__pycache__/
+.Python
+MANIFEST
+.ipynb_checkpoints
+.idea
+admin*
+token*
+localDB.py
+*.html
