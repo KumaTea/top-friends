@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Top Friends by host_user_screen_name</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    img.avatar {
+      border-radius: 50%;
+      transition: transform .2s;
+      /*opacity: 0.5*/
+    }
+    img.avatar:hover {
+      transform: scale(1.2);
+    }
+    .container {
+      position: relative;
+      text-align: center;
+      color: white;
+      /*transform: rotate(90deg)*/
+    }
+    .info {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .title {
+      text-align: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<div class="title">
+  <span style="font-size: 24px">
+    Top Friends by host_user_screen_name
+  </span>
+</div>
+<br>
+<div class="date" style="text-align: center">
+  top_friends_generated_date
+</div>
+<br>
+<div class="container">
