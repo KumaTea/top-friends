@@ -1,3 +1,4 @@
+import sys
 import json
 import base64
 import tweepy
@@ -38,8 +39,11 @@ max_days = 30
 max_friends = 30
 like_power = 1
 reply_power = 3*like_power
+retweet_power = 5*like_power
+quote_power = 5*like_power
 
 
+print('Initializing...')
 twitter_token = json.loads(query_token('twitter'))
 token_auth = tweepy.OAuthHandler(twitter_token['consumer_key'], twitter_token['consumer_secret'])
 token_auth.set_access_token(twitter_token['access_token'], twitter_token['access_token_secret'])
@@ -56,6 +60,12 @@ if __name__ == '__main__':
         host_user = None
         exit('Invalid user.')
 
+    with open('index.html', 'w', encoding='utf-8') as html_file:
+        html_file.write('Generating...')
+    with open('more-info.html', 'w', encoding='utf-8') as html_file:
+        html_file.write('Generating...')
+
+    print('Getting friends list...')
     friend_ids = twi.friends_ids()
     print('Friends count:', len(friend_ids))
     friends = {}
@@ -64,30 +74,49 @@ if __name__ == '__main__':
 
     now = datetime.now()
 
+    rmnl = lambda t: t.replace('\n', ' ')
+
+    print('Getting user timeline...')
     timeline = []
     try:
         for tweet in tweepy.Cursor(twi.user_timeline, id=host_user_screen_name).items():
             if (now - tweet.created_at).days > max_days:
                 break
+            sys.stdout.write('\r' + f'Get: {tweet.id}: {rmnl(tweet.text)[:70]}')
             timeline.append(tweet)
     except RateLimitError:
         print('RateLimitError.')
     print('Timeline:', len(timeline))
     for tweet in timeline:
-        if (reply_id := tweet.in_reply_to_user_id) and reply_id in friends:
-            friends[reply_id] += reply_power*(max_days - (now - tweet.created_at).days)
+        if tweet.user.id == host_user.id:
+            if tweet.in_reply_to_user_id and tweet.in_reply_to_user_id in friends:  # reply
+                reply_id = tweet.in_reply_to_user_id
+                friends[reply_id] += reply_power*(max_days - (now - tweet.created_at).days)
+            try:
+                if tweet.is_quote_status and tweet.quoted_status.user.id in friends:  # quote retweet
+                    quote_id = tweet.quoted_status.user.id
+                    friends[quote_id] += quote_power*(max_days - (now - tweet.created_at).days)
+            except AttributeError:  # deleted tweets
+                pass
+        else:  # retweets
+            if tweet.user.id in friends:
+                retweet_id = tweet.user.id
+                friends[retweet_id] += retweet_power * (max_days - (now - tweet.created_at).days)
 
+    print('Getting user likes...')
     likes = []
     try:
         for tweet in tweepy.Cursor(twi.favorites, id=host_user_screen_name).items():
             if (now - tweet.created_at).days > max_days:
                 break
+            sys.stdout.write('\r' + f'Get: {tweet.id}: {rmnl(tweet.text)[:70]}')
             likes.append(tweet)
     except RateLimitError:
         print('RateLimitError.')
     print('Likes:', len(likes))
     for tweet in likes:
-        if (like_id := tweet.user.id) in friends:
+        if tweet.user.id in friends:
+            like_id = tweet.user.id
             friends[like_id] += like_power*(max_days - (now - tweet.created_at).days)
 
     total_score = 0
@@ -107,7 +136,15 @@ if __name__ == '__main__':
         html_end = f.read()
 
     html_code = ''
-    html_code += html_start
+    more_info = ''
+    html_code += html_start + '<div class="container">\n'
+    more_info += html_start + '<div>\n' \
+                              '  <table style="width:85%">\n' \
+                              '    <tr>\n' \
+                              '      <th>Username</th>\n' \
+                              '      <th>Percentage</th>\n' \
+                              '      <th>Name</th>\n' \
+                              '    </tr>'
     index = 0
     for i in friends:
         friend_info = twi.get_user(i)
@@ -118,11 +155,30 @@ if __name__ == '__main__':
                       f'alt="Avatar" style="width:{round(240*friends[i]/friends[first_friend_id])}px"/></a>\n'
                       #f'<div class="info"><span style="color: black">{friend_info.name}</span><br><span style="color: black">{friend_info.screen_name}</span><br><progress max="{round(friends[first_friend_id])}" value="{round(friends[i]/friends[first_friend_id])}"></progress>&nbsp;&nbsp;<span>{friend_rate}</span></div>'
         html_code += friend_html
+        friend_more_info = '    <tr>\n' \
+                           f'      <th>@{friend_info.screen_name}</th>\n' \
+                           f'      <th>{friend_rate}</th>\n' \
+                           f'      <th>{friend_info.name}</th>\n' \
+                           '    </tr>'
+        more_info += friend_more_info
         print(f'@{format_text(friend_info.screen_name)}\t{friend_rate}\t{friend_info.name}')
         index += 1
         if index > max_friends:
             break
-    html_code += html_end
-
+    html_code += '</div>\n' \
+                 '<br>\n' \
+                 '<div style="text-align: center">\n' \
+                 '  <a href="more-info.html">\n' \
+                 '    More Info\n' \
+                 '  </a>\n' + html_end
+    more_info += '  </table>\n' \
+                 '</div>\n' \
+                 '<br>\n' \
+                 '<div style="text-align: center">\n' \
+                 '  <a href="index.html">\n' \
+                 '    Back\n' \
+                 '  </a>\n' + html_end
     with open('index.html', 'w', encoding='utf-8') as html_file:
         html_file.write(html_code)
+    with open('more-info.html', 'w', encoding='utf-8') as html_file:
+        html_file.write(more_info)
