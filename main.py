@@ -159,7 +159,7 @@ if __name__ == '__main__':
                            f'      <th>@{friend_info.screen_name}</th>\n' \
                            f'      <th>{friend_rate}</th>\n' \
                            f'      <th>{friend_info.name}</th>\n' \
-                           '    </tr>'
+                           '    </tr>\n'
         more_info += friend_more_info
         print(f'@{format_text(friend_info.screen_name)}\t{friend_rate}\t{friend_info.name}')
         index += 1
@@ -167,17 +167,21 @@ if __name__ == '__main__':
             break
     html_code += '</div>\n' \
                  '<br>\n' \
-                 '<div style="text-align: center">\n' \
-                 '  <a href="more-info.html">\n' \
-                 '    More Info\n' \
-                 '  </a>\n' + html_end
+                 '<div class="footer">\n' \
+                 '  <div>\n' \
+                 '    <a href="more-info.html">\n' \
+                 '      More Info\n' \
+                 '    </a>\n' \
+                 '  </div>\n' + html_end
     more_info += '  </table>\n' \
                  '</div>\n' \
                  '<br>\n' \
-                 '<div style="text-align: center">\n' \
-                 '  <a href="index.html">\n' \
-                 '    Back\n' \
-                 '  </a>\n' + html_end
+                 '<div class="footer">\n' \
+                 '  <div>\n' \
+                 '    <a href="index.html">\n' \
+                 '      Back\n' \
+                 '    </a>\n' \
+                 '  </div>\n' + html_end
     with open('index.html', 'w', encoding='utf-8') as html_file:
         html_file.write(html_code)
     with open('more-info.html', 'w', encoding='utf-8') as html_file:

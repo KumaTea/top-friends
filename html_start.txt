@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title>Top Friends by host_user_screen_name</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
   <style>
     img.avatar {
       border-radius: 50%;
@@ -29,6 +30,9 @@
       text-align: center;
       font-weight: bold;
     }
+    .footer {
+        text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -36,9 +40,5 @@
   <span style="font-size: 24px">
     Top Friends by host_user_screen_name
   </span>
-</div>
-<br>
-<div class="date" style="text-align: center">
-  top_friends_generated_date
 </div>
 <br>

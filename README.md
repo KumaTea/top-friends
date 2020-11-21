@@ -13,4 +13,4 @@ this project also counts likes and quote retweets.
 And it **only** counts those who you are following.
 
 ## Public Service?
-I currently don't have such a plan. But... it's open source! You may do it yourself of ypu want.
+I currently don't have such a plan. But... it's open source! You may do it yourself if you want.

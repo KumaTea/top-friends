@@ -1,3 +1,7 @@
+  <br>
+  <div>
+    <a class="github-button" href="https://github.com/KumaTea/top-friends" aria-label="Star KumaTea/top-friends on GitHub">Star</a>
+  </div>
 </div>
 </body>
 </html>
