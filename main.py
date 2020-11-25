@@ -66,7 +66,7 @@ if __name__ == '__main__':
         html_file.write('Generating...')
 
     print('Getting friends list...')
-    friend_ids = twi.friends_ids()
+    friend_ids = twi.friends_ids(host_user.id)
     print('Friends count:', len(friend_ids))
     friends = {}
     for i in friend_ids:
@@ -79,7 +79,7 @@ if __name__ == '__main__':
     print('Getting user timeline...')
     timeline = []
     try:
-        for tweet in tweepy.Cursor(twi.user_timeline, id=host_user_screen_name).items():
+        for tweet in tweepy.Cursor(twi.user_timeline, id=host_user.id).items():
             if (now - tweet.created_at).days > max_days:
                 break
             sys.stdout.write('\r' + f'Get: {tweet.id}: {rmnl(tweet.text)[:70]}')
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     print('Getting user likes...')
     likes = []
     try:
-        for tweet in tweepy.Cursor(twi.favorites, id=host_user_screen_name).items():
+        for tweet in tweepy.Cursor(twi.favorites, id=host_user.id).items():
             if (now - tweet.created_at).days > max_days:
                 break
             sys.stdout.write('\r' + f'Get: {tweet.id}: {rmnl(tweet.text)[:70]}')
