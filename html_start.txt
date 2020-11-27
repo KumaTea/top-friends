@@ -43,6 +43,6 @@
 </div>
 <br>
 <div class="date" style="text-align: center">
-  2020-11-21
+  top_friends_generated_date
 </div>
 <br>
