@@ -52,13 +52,16 @@ twi = tweepy.API(token_auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=
 
 
 if __name__ == '__main__':
-    host_user_screen_name = input('Please input your username: ')
-    try:
-        host_user = twi.get_user(host_user_screen_name)
-        print('User OK.')
-    except TweepError:
-        host_user = None
-        exit('Invalid user.')
+    host_user_screen_name = input('Please input your username: ') or None
+    if host_user_screen_name:
+        try:
+            host_user = twi.get_user(host_user_screen_name)
+            print('User OK.')
+        except TweepError:
+            host_user = None
+            exit('Invalid user.')
+    else:
+        host_user = twi.me()
 
     with open('index.html', 'w', encoding='utf-8') as html_file:
         html_file.write('Generating...')
@@ -72,7 +75,7 @@ if __name__ == '__main__':
     for i in friend_ids:
         friends[i] = 0
 
-    now = datetime.now()
+    now = datetime.now()  # datetime.now(timezone(timedelta(hours=8)))
 
     rmnl = lambda t: t.replace('\n', ' ')
 
