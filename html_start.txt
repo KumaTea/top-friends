@@ -2,22 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Top Friends by host_user_screen_name</title>
+  <title>Top Friends of host_user_screen_name</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <script>
-    let bg_para = 'bg'
-    function get_p(par) {
-      let args = window.location.search.substring(1).split('&');
-      for (let i = 0; i < args.length; i++) {
-        let par_name = args[i].split('=');
-        if (par_name[0] == par) {
-          return par_name[1];
-        }
-      }
-    }
-    if (get_p(bg_para)) {document.body.style.backgroundColor = '#' + get_p(bg_para)}
-  </script>
   <style>
     body {
         background-color: #fafad2;
@@ -52,6 +39,19 @@
   </style>
 </head>
 <body>
+  <script>
+    let bg_para = 'bg'
+    function get_p(par) {
+      let args = window.location.search.substring(1).split('&');
+      for (let i = 0; i < args.length; i++) {
+        let par_name = args[i].split('=');
+        if (par_name[0] == bg_para) {
+          return par_name[1];
+        }
+      }
+    }
+    if (get_p(bg_para)) {document.body.style.backgroundColor = '#' + get_p(bg_para)}
+  </script>
 <div class="title">
   <span style="font-size: 24px">
     Top Friends by host_user_screen_name
