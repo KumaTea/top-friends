@@ -54,7 +54,7 @@
   </script>
 <div class="title">
   <span style="font-size: 24px">
-    Top Friends by host_user_screen_name
+    Top Friends of host_user_screen_name
   </span>
 </div>
 <br>

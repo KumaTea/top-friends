@@ -1,96 +1,46 @@
-import sys
-import json
-import base64
-import tweepy
+from config import *
+from format import *
 from datetime import datetime
-from tweepy.error import TweepError, RateLimitError
-
-
-def read_file(filename, encrypt=False):
-    if encrypt:
-        with open(filename, 'rb') as f:
-            return base64.b64decode(f.read()).decode('utf-8')
-    else:
-        with open(filename, 'r') as f:
-            return f.read()
-
-
-def query_token(token_id):
-    return read_file(f'token_{token_id}', True)
-
-
-def format_text(text, length=12):
-    l = len(text)
-    if l == length:
-        return text
-    elif l < length:
-        return text + (length-l)*' '
-    elif l > 12:
-        return text[:length-3] + '...'
-
-
-def format_html_start(text, user, current_time):
-    text = text.replace('host_user_screen_name', user.name)
-    text = text.replace('top_friends_generated_date', current_time.strftime('%Y-%m-%d'))
-    return text
-
-
-max_days = 30
-max_friends = 30
-like_power = 1
-reply_power = 3*like_power
-retweet_power = 5*like_power
-quote_power = 5*like_power
-
-
-print('Initializing...')
-twitter_token = json.loads(query_token('twitter'))
-token_auth = tweepy.OAuthHandler(twitter_token['consumer_key'], twitter_token['consumer_secret'])
-token_auth.set_access_token(twitter_token['access_token'], twitter_token['access_token_secret'])
-twi = tweepy.API(token_auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-# twi = tweepy.API(token_auth)
+from session import twi, logger
+from tweet_fetch import cursor_wrapper
 
 
 if __name__ == '__main__':
-    """host_user_screen_name = input('Please input your username: ') or None
+    """
+    host_user_screen_name = input('Please input your username: ') or None
     if host_user_screen_name:
         try:
             host_user = twi.get_user(host_user_screen_name)
-            print('User OK.')
+            logger.info('User OK.')
         except TweepError:
             host_user = None
             exit('Invalid user.')
     else:
-        host_user = twi.me()"""
+        host_user = twi.me()
+    """
+    logger.warning('Initializing...')
     host_user = twi.me()
 
+    # Temporarily remove web page
     with open('index.html', 'w', encoding='utf-8') as html_file:
         html_file.write('Generating...')
     with open('more-info.html', 'w', encoding='utf-8') as html_file:
         html_file.write('Generating...')
 
-    print('Getting friends list...')
+    logger.warning('Getting friends list...')
     friend_ids = twi.friends_ids(host_user.id)
-    print('Friends count:', len(friend_ids))
+    logger.info('Friends count:', len(friend_ids))
     friends = {}
     for i in friend_ids:
         friends[i] = 0
 
     now = datetime.now()  # datetime.now(timezone(timedelta(hours=8)))
 
-    rmnl = lambda t: t.replace('\n', ' ')
-
-    print('Getting user timeline...')
+    logger.warning('Getting user timeline...')
     timeline = []
-    try:
-        for tweet in tweepy.Cursor(twi.user_timeline, id=host_user.id).items():
-            if (now - tweet.created_at).days > max_days:
-                break
-            sys.stdout.write('\r' + f'Get: {tweet.id}: {rmnl(tweet.text)[:70]}')
-            timeline.append(tweet)
-    except RateLimitError:
-        print('RateLimitError.')
-    print('Timeline:', len(timeline))
+    timeline = cursor_wrapper(twi, timeline, now, 'user_timeline', host_user)
+    logger.info('Timeline:', len(timeline))
+
     for tweet in timeline:
         if tweet.user.id == host_user.id:
             if tweet.in_reply_to_user_id and tweet.in_reply_to_user_id in friends:  # reply
@@ -107,17 +57,11 @@ if __name__ == '__main__':
                 retweet_id = tweet.user.id
                 friends[retweet_id] += retweet_power * (max_days - (now - tweet.created_at).days)
 
-    print('Getting user likes...')
+    logger.warning('Getting user likes...')
     likes = []
-    try:
-        for tweet in tweepy.Cursor(twi.favorites, id=host_user.id).items():
-            if (now - tweet.created_at).days > max_days:
-                break
-            sys.stdout.write('\r' + f'Get: {tweet.id}: {rmnl(tweet.text)[:70]}')
-            likes.append(tweet)
-    except RateLimitError:
-        print('RateLimitError.')
-    print('Likes:', len(likes))
+    likes = cursor_wrapper(twi, likes, now, 'favorites', host_user)
+    logger.info('Likes:', len(likes))
+
     for tweet in likes:
         if tweet.user.id in friends:
             like_id = tweet.user.id
@@ -126,9 +70,10 @@ if __name__ == '__main__':
     total_score = 0
     for i in friends:
         total_score += friends[i]
-    print('Total score:', total_score)
+    logger.info('Total score:', total_score)
 
-    friends = {k: v for k, v in sorted(friends.items(), key=lambda item: item[1], reverse=True)}
+    friends = {k: v for k, v in sorted(
+        friends.items(), key=lambda item: item[1], reverse=True)}
 
     first_friend_id = list(friends.keys())[0]
     first_friend = twi.get_user(first_friend_id)
@@ -165,7 +110,7 @@ if __name__ == '__main__':
                            f'      <th>{friend_info.name}</th>\n' \
                            '    </tr>\n'
         more_info += friend_more_info
-        print(f'@{format_text(friend_info.screen_name)}\t{friend_rate}\t{friend_info.name}')
+        logger.info(f'@{format_text(friend_info.screen_name)}\t{friend_rate}\t{friend_info.name}')
         index += 1
         if index > max_friends:
             break
