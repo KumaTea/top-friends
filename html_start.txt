@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cn">
 <head>
   <meta charset="utf-8">
   <title>Top Friends of host_user_screen_name</title>
@@ -23,12 +23,6 @@
       color: white;
       /*transform: rotate(90deg)*/
     }
-    .info {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
     .title {
       text-align: center;
       font-weight: bold;
@@ -41,11 +35,11 @@
 <body>
   <script>
     let bg_para = 'bg'
-    function get_p(par) {
+    function get_p() {
       let args = window.location.search.substring(1).split('&');
       for (let i = 0; i < args.length; i++) {
         let par_name = args[i].split('=');
-        if (par_name[0] == bg_para) {
+        if (par_name[0] === bg_para) {
           return par_name[1];
         }
       }
