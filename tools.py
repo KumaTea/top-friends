@@ -12,3 +12,7 @@ def read_file(filename, encrypt=False):
 
 def query_token(token_id):
     return read_file(f'token_{token_id}', True)
+
+
+def sort_dict_by_value(dictionary, reverse=True):
+    return {k: v for k, v in sorted(dictionary.items(), key=lambda item: item[1], reverse=reverse)}
