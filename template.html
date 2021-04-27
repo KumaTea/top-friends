@@ -39,22 +39,52 @@
     .footer {
       text-align: center;
     }
+
+    progress {
+      text-align: center;
+      -webkit-appearance: none;
+      border: none;
+      position: relative;
+    }
+
+    progress:before {
+      content: attr(data-label);
+      position: absolute;
+      left: 0;
+      right: 0;
+    }
+
+    progress::-webkit-progress-bar {
+      background-color: #fafad2;
+    }
+
+    progress::-webkit-progress-value {
+      background-color: #7cc4ff;
+    }
+
+    progress::-moz-progress-bar {
+      background-color: #7cc4ff;
+    }
   </style>
 </head>
 <body>
-  <script>
+<script>
     let bg_para = 'bg'
+
     function get_p() {
-      let args = window.location.search.substring(1).split('&');
-      for (let i = 0; i < args.length; i++) {
-        let par_name = args[i].split('=');
-        if (par_name[0] === bg_para) {
-          return par_name[1];
+        let args = window.location.search.substring(1).split('&');
+        for (let i = 0; i < args.length; i++) {
+            let par_name = args[i].split('=');
+            if (par_name[0] === bg_para) {
+                return par_name[1];
+            }
         }
-      }
     }
-    if (get_p(bg_para)) {document.body.style.backgroundColor = '#' + get_p(bg_para)}
-  </script>
+
+    if (get_p(bg_para)) {
+        document.body.style.backgroundColor = '#' + get_p(bg_para)
+    }
+</script>
 <div class="title">
   <span style="font-size: 24px">
     Top Friends of host_user_screen_name
@@ -65,3 +95,21 @@
   top_friends_generated_date
 </div>
 <br>
+<div class="main_class_name">
+  html_main_content_here
+</div>
+<br>
+<div class="footer">
+  <div>
+    <a href="the_other_page_path">
+      Back
+    </a>
+  </div>
+  <br>
+  <div>
+    <a class="github-button" href="https://github.com/KumaTea/top-friends"
+       aria-label="Star KumaTea/top-friends on GitHub">Star</a>
+  </div>
+</div>
+</body>
+</html>

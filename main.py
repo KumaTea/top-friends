@@ -76,7 +76,7 @@ if __name__ == '__main__':
     """
     ============ C O M M E N T ============
 
-    Writting HTML.
+    Writing HTML.
 
     ============ C O M M E N T ============
     """
@@ -84,23 +84,24 @@ if __name__ == '__main__':
     first_friend_id = list(friends.keys())[0]
     max_rate = round(100 * friends[first_friend_id] / total_score)
 
-    with open('html_start.txt', 'r', encoding='utf-8') as f:
-        html_start = format_html_start(f.read(), host_user, now)
-    with open('html_end.txt', 'r', encoding='utf-8') as f:
-        html_end = f.read()
+    with open('template.html', 'r', encoding='utf-8') as f:
+        html_content = format_html_start(f.read(), host_user, now)
 
-    html_code = ''
-    more_info = ''
-    html_code += html_start + '<div class="container">\n'
-    more_info += html_start + '<div>\n' \
-                              '  <table style="width:85%">\n' \
-                              '    <tr>\n' \
-                              '      <th>Username</th>\n' \
-                              '      <th>Percentage</th>\n' \
-                              '      <th>Name</th>\n' \
-                              '      <th>Mutual</th>\n' \
-                              '    </tr>'
+    html_code = html_content.replace('main_class_name', 'container')
+    more_info = html_content.replace('main_class_name', '')
+    html_code = html_code.replace('the_other_page_path', 'more-info.html')
+    more_info = more_info.replace('the_other_page_path', 'index.html')
+    more_info += '  <table style="width:85%">\n' \
+                 '    <tr>\n' \
+                 '      <th>Username</th>\n' \
+                 '      <th>Percentage</th>\n' \
+                 '      <th>Name</th>\n' \
+                 '      <th>Mutual</th>\n' \
+                 '    </tr>\n'
+
     index = 0
+    html_temp = ''
+    more_temp = ''
     for i in friends:
         friend_info = twi.get_user(i)
         profile_url = friend_info.profile_image_url_https.replace('_normal', '')
@@ -118,37 +119,23 @@ if __name__ == '__main__':
                       f'alt="Avatar" style="width:{round(240 * friends[i] / friends[first_friend_id])}px" />' \
                       f'</a>' \
                       f'  </span>\n'
-        html_code += friend_html
+        html_temp += friend_html
         friend_more_info = '    <tr>\n' \
-                           f'      <th>@{friend_info.screen_name}</th>\n' \
-                           f'      <th>{friend_rate}</th>\n' \
+                           f'      <th><a href="https://twitter.com/{friend_info.screen_name}">@{friend_info.screen_name}</a></th>\n' \
+                           f'      <th><progress max="{total_score}" value="{friends[i]}" data-label="{friend_rate}" /></th>\n' \
                            f'      <th>{friend_info.name}</th>\n' \
                            f'      <th>{is_mutual}</th>\n' \
                            '    </tr>\n'
-        more_info += friend_more_info
+        more_temp += friend_more_info
 
         logger.info(f'@{format_text(friend_info.screen_name)}\t{friend_rate}\t{friend_info.name}')
         index += 1
         if index > max_friends:
             break
 
-    html_code += '</div>\n' \
-                 '<br>\n' \
-                 '<div class="footer">\n' \
-                 '  <div>\n' \
-                 '    <a href="more-info.html">\n' \
-                 '      More Info\n' \
-                 '    </a>\n' \
-                 '  </div>\n' + html_end
-    more_info += '  </table>\n' \
-                 '</div>\n' \
-                 '<br>\n' \
-                 '<div class="footer">\n' \
-                 '  <div>\n' \
-                 '    <a href="index.html">\n' \
-                 '      Back\n' \
-                 '    </a>\n' \
-                 '  </div>\n' + html_end
+    more_temp += '  </table>\n'
+    html_code = html_content.replace('html_main_content_here', html_temp)
+    more_info = html_content.replace('html_main_content_here', more_temp)
 
     with open('index.html', 'w', encoding='utf-8') as html_file:
         html_file.write(html_code)
