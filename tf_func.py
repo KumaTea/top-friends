@@ -112,7 +112,7 @@ def get_mutual(friend, friends_info):
     index = friends_info[friend]['index']
     mutual_tag = ''
     is_mutual = 'No'
-    if index:
+    if index or index == 0:
         if type(index) is int:
             if index < mutual_top_power['range']:
                 mutual_tag = ' ' + 'mutual'

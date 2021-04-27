@@ -106,6 +106,11 @@ if __name__ == '__main__':
         profile_url = friend_info.profile_image_url_https.replace('_normal', '')
         friend_rate = format(100 * friends[i] / total_score, '.2f') + '%'
         mutual_tag, is_mutual = get_mutual(i, friends_info)
+        if type(is_mutual) is int:
+            if is_mutual > index + 1:
+                is_mutual = f'<span style="color: crimson">{is_mutual}</span>'
+            else:
+                is_mutual = f'<span style="color: forestgreen">{is_mutual}</span>'
 
         friend_html = f'  <span>' \
                       f'<a href="https://twitter.com/{friend_info.screen_name}">' \

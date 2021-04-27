@@ -24,12 +24,6 @@
       transform: scale(1.2);
     }
 
-    .mutual {
-      outline: none;
-      border-color: #9ecaed;
-      box-shadow: 0 0 10px 10px #9ecaed;
-    }
-
     .container {
       position: relative;
       text-align: center;
@@ -47,3 +41,27 @@
     }
   </style>
 </head>
+<body>
+  <script>
+    let bg_para = 'bg'
+    function get_p() {
+      let args = window.location.search.substring(1).split('&');
+      for (let i = 0; i < args.length; i++) {
+        let par_name = args[i].split('=');
+        if (par_name[0] === bg_para) {
+          return par_name[1];
+        }
+      }
+    }
+    if (get_p(bg_para)) {document.body.style.backgroundColor = '#' + get_p(bg_para)}
+  </script>
+<div class="title">
+  <span style="font-size: 24px">
+    Top Friends of host_user_screen_name
+  </span>
+</div>
+<br>
+<div class="date" style="text-align: center">
+  top_friends_generated_date
+</div>
+<br>
