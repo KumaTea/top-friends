@@ -15,10 +15,6 @@ if __name__ == '__main__':
     now = datetime.now()  # datetime.now(timezone(timedelta(hours=8)))
 
     # Temporarily remove web page
-    with open('index.html', 'w', encoding='utf-8') as html_file:
-        html_file.write('Generating...')
-    with open('more-info.html', 'w', encoding='utf-8') as html_file:
-        html_file.write('Generating...')
 
     """
     ============ C O M M E N T ============

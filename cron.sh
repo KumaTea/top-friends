@@ -4,11 +4,13 @@ set -ex
 
 DATE=$(date +%y%m%d)
 
-mkdir archive
-mkdir -p "archive/$DATE"
+mkdir archive || :
+mkdir -p "archive/$DATE" || :
 
-cp index.html "archive/$DATE/"
-cp more-info.html "archive/$DATE/"
+mv index.html "archive/$DATE/"
+mv more-info.html "archive/$DATE/"
+cp gen.html index.html
+cp gen.html more-info.html
 
 echo "<meta http-equiv=\"refresh\" content=\"0; URL=$DATE/\" />" > "archive/index.html"
 
