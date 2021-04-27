@@ -1,4 +1,4 @@
-from format import *
+from tools import *
 from session import host_user
 from tf_func import *
 
@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     logger.info('Getting friends list...')
     friends = get_empty_friends_dict(host_user.id)
-    friends_info = friends.copy()
+    # friends_info = friends.copy()
 
     """
     ============ C O M M E N T ============
@@ -53,6 +53,9 @@ if __name__ == '__main__':
 
     ============ C O M M E N T ============
     """
+
+    friends = sort_dict_by_value(friends)
+    friends_info = {k: 0 for k in list(friends.keys())}
 
     if check_mutual_top:
         friends, friends_info = process_friends_info(friends, friends_info, me=twi._me.id, now=now)
@@ -106,14 +109,13 @@ if __name__ == '__main__':
         friend_info = twi.get_user(i)
         profile_url = friend_info.profile_image_url_https.replace('_normal', '')
         friend_rate = format(100 * friends[i] / total_score, '.2f') + '%'
-        mutual_tag = 'class="mutual"' if friends_info[i]['index'] else ''
-        is_mutual = friends_info[i]['index'] if friends_info[i]['index'] else 'No'
+        mutual_tag, is_mutual = get_mutual(i, friends_info)
 
-        friend_html = f'  <span>\n' \
-                      f'    <a href="https://twitter.com/{friend_info.screen_name}">\n' \
-                      f'      <img class="avatar" {mutual_tag} src="{profile_url}" ' \
-                      f'alt="Avatar" style="width:{round(240 * friends[i] / friends[first_friend_id])}px" />\n' \
-                      f'    </a>\n' \
+        friend_html = f'  <span>' \
+                      f'<a href="https://twitter.com/{friend_info.screen_name}">' \
+                      f'<img class="avatar{mutual_tag}" src="{profile_url}" ' \
+                      f'alt="Avatar" style="width:{round(240 * friends[i] / friends[first_friend_id])}px" />' \
+                      f'</a>' \
                       f'  </span>\n'
         html_code += friend_html
         friend_more_info = '    <tr>\n' \

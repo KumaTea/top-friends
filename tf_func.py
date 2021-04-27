@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from tqdm import tqdm
+from tqdm import trange
 
 from config import *
 from session import twi, logger
@@ -25,7 +25,7 @@ def process_timeline(user, friends, now=datetime.now()):
     if user == twi._me.id or user == twi._me.screen_name:
         max_size = None
     timeline = cursor_wrapper(timeline, 'user_timeline', user, now, max_size)
-    logger.info(f'@{user}\'s timeline: {len(timeline)}')
+    logger.info(f'{user}\'s timeline: {len(timeline)}')
 
     for tweet in timeline:
         if tweet.user.id == user:
@@ -69,11 +69,12 @@ def get_friend_info(friend, now=datetime.now()):
 
 
 def get_friends_info(friends_info, now=datetime.now()):
-    for friend in tqdm(list(friends_info.keys())):
+    for i in trange(query_friends):
+        friend = list(friends_info.keys())[i]
         logger.info(f'Getting friends info: {friend}')
         if not friends_info[friend]:
             friends_info[friend] = get_friend_info(friend, now)
-    return sort_dict_by_value(friends_info)
+    return friends_info
 
 
 def get_mutual_top_power(rank):
@@ -94,9 +95,28 @@ def process_friends_info(friends, friends_info, me=twi._me.id, now=datetime.now(
             rank = get_mutual_top_power(friend_index)
             logger.info(f'You get {friend_index} in {i}.')
             print(f'You get {friend_index} in {i}.')
-            friends_info[i]['index'] = str(friend_index)
-        except AttributeError:
+            friends_info[i]['index'] = friend_index
+        except (AttributeError, ValueError) as e:
             logger.error('Not found!', i)
-            friends_info[i]['index'] = None
+            if friends_info[i]:
+                friends_info[i]['index'] = None
+            else:
+                friends_info[i] = {
+                    'index': None
+                }
         friends[i] = rank * friends[i]
     return friends, friends_info
+
+
+def get_mutual(friend, friends_info):
+    index = friends_info[friend]['index']
+    mutual_tag = ''
+    is_mutual = 'No'
+    if index:
+        if type(index) is int:
+            if index < mutual_top_power['range']:
+                mutual_tag = ' ' + 'mutual'
+                is_mutual = index + 1
+            else:
+                is_mutual = f'Ex ({index})'
+    return mutual_tag, is_mutual
