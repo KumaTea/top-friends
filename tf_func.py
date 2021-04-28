@@ -1,3 +1,4 @@
+import pickle
 from datetime import datetime
 
 from tqdm import trange
@@ -74,6 +75,8 @@ def get_friends_info(friends_info, now=datetime.now()):
         logger.info(f'Getting friends info: {friend}')
         if not friends_info[friend]:
             friends_info[friend] = get_friend_info(friend, now)
+        with open('friends_info.p', 'wb') as f:
+            pickle.dump(friends_info, f)
     return friends_info
 
 
@@ -87,6 +90,8 @@ def get_mutual_top_power(rank):
 
 
 def process_friends_info(friends, friends_info, me=twi._me.id, now=datetime.now()):
+    with open('friends.p', 'wb') as f:
+        pickle.dump(friends, f)
     friends_info = get_friends_info(friends_info, now)
     for i in friends:
         rank = mutual_top_power['last']
