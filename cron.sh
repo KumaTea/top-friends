@@ -2,7 +2,7 @@
 
 set -ex
 
-DATE=$(date +%y%m%d)
+DATE=$(date +%y%m%d --date="-1 day")
 
 mkdir archive || :
 mkdir -p "archive/$DATE" || :

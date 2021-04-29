@@ -1,4 +1,3 @@
-import pickle
 from tools import *
 from session import host_user
 from tf_func import *
@@ -129,10 +128,10 @@ if __name__ == '__main__':
                       f'  </span>\n'
         html_temp += friend_html
         friend_more_info = '    <tr>\n' \
-                           f'      <th><a href="https://twitter.com/{friend_info.screen_name}">@{friend_info.screen_name}</a></th>\n' \
-                           f'      <th><progress max="{friends[first_friend_id]}" value="{friends[i]}" data-label="{friend_rate}"></progress></th>\n' \
-                           f'      <th>{friend_info.name}</th>\n' \
-                           f'      <th>{is_mutual}</th>\n' \
+                           f'      <td><span style="text-align: left"><a href="https://twitter.com/{friend_info.screen_name}">@{friend_info.screen_name}</a></span></td>\n' \
+                           f'      <td><progress max="{round(friends[first_friend_id])}" value="{round(friends[i])}" data-label="{friend_rate}"></progress></td>\n' \
+                           f'      <td>{friend_info.name}</td>\n' \
+                           f'      <td>{is_mutual}</td>\n' \
                            '    </tr>\n'
         more_temp += friend_more_info
 

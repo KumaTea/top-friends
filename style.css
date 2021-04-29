@@ -1,0 +1,61 @@
+body {
+  background-color: #fafad2;
+}
+
+img.avatar {
+  border-radius: 50%;
+  transition: transform .2s;
+  /*opacity: 0.5*/
+}
+
+img.avatar:hover {
+  transform: scale(1.2);
+}
+
+.container {
+  position: relative;
+  text-align: center;
+  color: white;
+  /*transform: rotate(90deg)*/
+}
+
+.title {
+  text-align: center;
+  font-weight: bold;
+}
+
+.footer {
+  text-align: center;
+}
+
+progress {
+  text-align: center;
+  -webkit-appearance: none;
+  border: none;
+  position: relative;
+}
+
+progress:before {
+  content: attr(data-label);
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+progress::-webkit-progress-bar {
+  background-color: #fafad2;
+}
+
+progress::-webkit-progress-value {
+  background-color: #7cc4ff;
+}
+
+progress::-moz-progress-bar {
+  background-color: #7cc4ff;
+}
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
