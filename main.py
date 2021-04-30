@@ -94,8 +94,10 @@ if __name__ == '__main__':
     with open('template.html', 'r', encoding='utf-8') as f:
         html_content = format_html_start(f.read(), host_user, now)
 
-    html_code = html_content.replace('main_class_name', 'container')
-    more_info = html_content.replace('main_class_name', '')
+    html_code = html_content
+    more_info = html_content
+    html_code = html_code.replace('main_class_name', 'container')
+    more_info = more_info.replace('main_class_name', '')
     html_code = html_code.replace('the_other_page_path', 'more-info.html')
     more_info = more_info.replace('the_other_page_path', 'index.html')
 
@@ -141,8 +143,8 @@ if __name__ == '__main__':
             break
 
     more_temp += '  </table>\n'
-    html_code = html_content.replace('html_main_content_here', html_temp)
-    more_info = html_content.replace('html_main_content_here', more_temp)
+    html_code = html_code.replace('html_main_content_here', html_temp)
+    more_info = more_info.replace('html_main_content_here', more_temp)
 
     with open('index.html', 'w', encoding='utf-8') as html_file:
         html_file.write(html_code)
