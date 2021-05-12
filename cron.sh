@@ -17,7 +17,11 @@ cp gen.html more-info.html || echo "Already backed up"
 echo "<meta http-equiv=\"refresh\" content=\"0; URL=$DATE/\" />" > "archive/index.html"
 
 echo "Executing main program"
-pypy3 main.py || /usr/local/bin/pypy3 main.py || /usr/local/bin/pypy3 main.py
+until /usr/local/bin/pypy3 main.py
+do
+  echo "Try again"
+  sleep 30
+done
 
 echo "Backing up"
-mv friends.p friends_info.p "archive/$TODAY/" || echo "Already backed up"
+mv friends.p friends_info.p friends_w.p "archive/$TODAY/" || echo "Already backed up"

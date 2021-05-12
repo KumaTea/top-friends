@@ -110,6 +110,8 @@ def process_friends_info(friends, friends_info, me=twi._me.id, now=datetime.now(
                     'index': None
                 }
         friends[i] = rank * friends[i]
+        with open('friends_w.p', 'wb') as f:
+            pickle.dump(friends, f)
     return friends, friends_info
 
 

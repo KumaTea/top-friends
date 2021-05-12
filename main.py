@@ -123,14 +123,14 @@ if __name__ == '__main__':
                 is_mutual = f'<span style="color: forestgreen">{is_mutual}</span>'
 
         friend_html = f'  <span>' \
-                      f'<a href="https://twitter.com/{friend_info.screen_name}">' \
+                      f'<a href="https://twitter.com/{friend_info.screen_name}" target="_blank">' \
                       f'<img class="avatar{mutual_tag}" src="{profile_url}" ' \
                       f'alt="Avatar" style="width:{round(240 * friends[i] / friends[first_friend_id])}px" />' \
                       f'</a>' \
                       f'  </span>\n'
         html_temp += friend_html
         friend_more_info = '    <tr>\n' \
-                           f'      <td><span style="text-align: left"><a href="https://twitter.com/{friend_info.screen_name}">@{friend_info.screen_name}</a></span></td>\n' \
+                           f'      <td><span style="text-align: left"><a href="https://twitter.com/{friend_info.screen_name}" target="_blank">@{friend_info.screen_name}</a></span></td>\n' \
                            f'      <td><progress max="{round(friends[first_friend_id])}" value="{round(friends[i])}" data-label="{friend_rate}"></progress></td>\n' \
                            f'      <td>{friend_info.name}</td>\n' \
                            f'      <td>{is_mutual}</td>\n' \
