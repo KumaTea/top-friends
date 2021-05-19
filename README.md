@@ -1,7 +1,7 @@
 # top-friends
 Twitter Top Friends
 
-[DEMO](https://top.maku.ml)
+[DEMO](https://top.kmtea.eu)
 > Try resize the window!
 
 ## Method

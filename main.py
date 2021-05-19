@@ -1,6 +1,7 @@
 from tools import *
 from session import host_user
 from tf_func import *
+from tweepy.error import TweepError
 
 if __name__ == '__main__':
     """
@@ -112,35 +113,38 @@ if __name__ == '__main__':
                 '    </tr>\n'
 
     for i in friends:
-        friend_info = twi.get_user(i)
-        profile_url = friend_info.profile_image_url_https.replace('_normal', '')
-        friend_rate = format(100 * friends[i] / total_score, '.2f') + '%'
-        mutual_tag, is_mutual = get_mutual(i, friends_info)
-        if type(is_mutual) is int:
-            if is_mutual > index + 1:
-                is_mutual = f'<span style="color: crimson">{is_mutual}</span>'
-            else:
-                is_mutual = f'<span style="color: forestgreen">{is_mutual}</span>'
+        try:
+            friend_info = twi.get_user(i)
+            profile_url = friend_info.profile_image_url_https.replace('_normal', '')
+            friend_rate = format(100 * friends[i] / total_score, '.2f') + '%'
+            mutual_tag, is_mutual = get_mutual(i, friends_info)
+            if type(is_mutual) is int:
+                if is_mutual > index + 1:
+                    is_mutual = f'<span style="color: crimson">{is_mutual}</span>'
+                else:
+                    is_mutual = f'<span style="color: forestgreen">{is_mutual}</span>'
 
-        friend_html = f'  <span>' \
-                      f'<a href="https://twitter.com/{friend_info.screen_name}" target="_blank">' \
-                      f'<img class="avatar{mutual_tag}" src="{profile_url}" ' \
-                      f'alt="Avatar" style="width:{round(240 * friends[i] / friends[first_friend_id])}px" />' \
-                      f'</a>' \
-                      f'  </span>\n'
-        html_temp += friend_html
-        friend_more_info = '    <tr>\n' \
-                           f'      <td><span style="text-align: left"><a href="https://twitter.com/{friend_info.screen_name}" target="_blank">@{friend_info.screen_name}</a></span></td>\n' \
-                           f'      <td><progress max="{round(friends[first_friend_id])}" value="{round(friends[i])}" data-label="{friend_rate}"></progress></td>\n' \
-                           f'      <td>{friend_info.name}</td>\n' \
-                           f'      <td>{is_mutual}</td>\n' \
-                           '    </tr>\n'
-        more_temp += friend_more_info
+            friend_html = f'  <span>' \
+                          f'<a href="https://twitter.com/{friend_info.screen_name}" target="_blank">' \
+                          f'<img class="avatar{mutual_tag}" src="{profile_url}" ' \
+                          f'alt="Avatar" style="width:{round(240 * friends[i] / friends[first_friend_id])}px" />' \
+                          f'</a>' \
+                          f'  </span>\n'
+            html_temp += friend_html
+            friend_more_info = '    <tr>\n' \
+                               f'      <td><span style="text-align: left"><a href="https://twitter.com/{friend_info.screen_name}" target="_blank">@{friend_info.screen_name}</a></span></td>\n' \
+                               f'      <td><progress max="{round(friends[first_friend_id])}" value="{round(friends[i])}" data-label="{friend_rate}"></progress></td>\n' \
+                               f'      <td>{friend_info.name}</td>\n' \
+                               f'      <td>{is_mutual}</td>\n' \
+                               '    </tr>\n'
+            more_temp += friend_more_info
 
-        logger.info(f'@{format_text(friend_info.screen_name)}\t{friend_rate}\t{friend_info.name}')
-        index += 1
-        if index > max_friends:
-            break
+            logger.info(f'@{format_text(friend_info.screen_name)}\t{friend_rate}\t{friend_info.name}')
+            index += 1
+            if index > max_friends:
+                break
+        except TweepError:
+            logger.warning(f'User {i} not found!')
 
     more_temp += '  </table>\n'
     html_code = html_code.replace('html_main_content_here', html_temp)

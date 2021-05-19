@@ -17,7 +17,7 @@ cp gen.html more-info.html || echo "Already backed up"
 echo "<meta http-equiv=\"refresh\" content=\"0; URL=$DATE/\" />" > "archive/index.html"
 
 echo "Executing main program"
-until /usr/local/bin/pypy3 main.py
+until /home/kuma/.conda/envs/pypy/bin/pypy3 main.py >> cron.log
 do
   echo "Try again"
   sleep 30
